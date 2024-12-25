@@ -5,13 +5,17 @@ import { Navigate, Outlet, useSearchParams } from "react-router-dom"
 import { routes } from "./routes"
 
 const Login = lazy(async () => await import("@/pages/auth/login"))
-
+const Register = lazy(async () => await import("@/pages/auth/register"))
 export const authRoutes = {
   element: <AuthRoute />,
   children: [
     {
       path: routes.auth.login,
       element: <Login />,
+    },
+    {
+      path: routes.auth.register,
+      element: <Register />,
     },
   ],
 }

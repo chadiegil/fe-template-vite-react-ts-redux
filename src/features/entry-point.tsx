@@ -1,5 +1,5 @@
 import { useAppDispatch } from "@/hooks/use-app-dispatch"
-import { refreshToken } from "@/redux/slice/auth-slice"
+import { refreshToken } from "@/redux/slices/auth-slice"
 import { guestRoutes } from "@/routes/guest-route"
 import { authRoutes } from "@/routes/auth-route"
 import { Suspense, useEffect, useState } from "react"
@@ -24,7 +24,9 @@ export const EntryPoint = () => {
     void verifyRefreshToken()
   }, [])
 
-  return loading ? null : (
+  return loading ? (
+    <>Loading...</>
+  ) : (
     <Suspense fallback={null}>
       <RouterProvider router={router} />
     </Suspense>

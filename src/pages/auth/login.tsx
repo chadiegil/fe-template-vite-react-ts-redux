@@ -1,6 +1,11 @@
+import { LoginForm } from "@/features/auth/login-form"
 import { useTitle } from "@/hooks/use-title"
 
 export default function Login() {
   useTitle("Login")
-  return <h1>Login Page</h1>
+  return (
+    <div className="flex items-center justify-center">
+      <LoginForm />
+    </div>
+  )
 }

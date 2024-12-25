@@ -2,13 +2,13 @@ import axios, { type AxiosInstance } from "axios"
 import { type Store } from "@reduxjs/toolkit"
 import { type RootState } from "@/redux/store"
 import { refreshUserToken } from "@/services/api"
-import { setAccessToken } from "@/redux/slice/auth-slice"
+import { setAccessToken } from "@/redux/slices/auth-slice"
 
 export let axiosInstance: AxiosInstance
 
 export const setupAxiosInstance = (store: Store<RootState>) => {
   axiosInstance = axios.create({
-    baseURL: import.meta.env.REACT_APP_BASE_URL,
+    baseURL: import.meta.env.VITE_APP_BASE_URL,
     headers: { "Content-Type": "application/json" },
     withCredentials: true,
   })
