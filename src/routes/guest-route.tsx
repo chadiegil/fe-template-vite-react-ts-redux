@@ -4,6 +4,7 @@ import { Suspense } from "react"
 
 const Layout = lazy(() => import("@/components/layouts/layout"))
 const Home = lazy(() => import("@/pages/home"))
+const About = lazy(() => import("@/pages/about/about"))
 
 export const guestRoutes = {
   path: routes.home, // Matches "/"
@@ -20,6 +21,10 @@ export const guestRoutes = {
           <Home />
         </Suspense>
       ),
+    },
+    {
+      path: routes.about,
+      element: <About />,
     },
   ],
 }

@@ -1,13 +1,13 @@
 export const routes = {
   home: "/",
   notFound: "*",
+  about: "/about",
   auth: {
     login: "/auth/login",
     register: "/auth/register",
   },
-  private: {
-    admin: {
-      post: "/admin/post",
-    },
+  admin: {
+    post: "/admin/post",
+    settings: "/admin/settings",
   },
 }
