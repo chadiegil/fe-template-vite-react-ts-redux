@@ -4,11 +4,12 @@ import { guestRoutes } from "@/routes/guest-route"
 import { authRoutes } from "@/routes/auth-route"
 import { Suspense, useEffect, useState } from "react"
 import { RouterProvider, createBrowserRouter } from "react-router-dom"
+import { adminRoutes } from "@/routes/admin-route"
 
 const router = createBrowserRouter([
   guestRoutes,
   authRoutes,
-  //   privateRoutes,
+  adminRoutes,
   //   otherRoutes,
 ])
 

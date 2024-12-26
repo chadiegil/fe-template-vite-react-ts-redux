@@ -49,6 +49,17 @@ export const refreshToken = createAsyncThunk(
   }
 )
 
+export const logout = createAsyncThunk("auth/logout", async (_, thunkApi) => {
+  try {
+    const response = await axiosInstance.post("/auth/logout")
+    return response.data
+  } catch (error) {
+    const axiosError = error as AxiosError
+    const response = axiosError.response?.data as ApiError
+    return thunkApi.rejectWithValue(response.message)
+  }
+})
+
 interface InitialState {
   loading: Loading.Idle | Loading.Pending | Loading.Fulfilled | Loading.Rejected
   error: string | null
@@ -88,6 +99,39 @@ const authSlice = createSlice({
     builder.addCase(login.rejected, (state, action) => {
       state.loading = Loading.Rejected
       state.error = action.payload as string
+    })
+    /**
+     * Refresh token
+     */
+    builder.addCase(refreshToken.pending, (state) => {
+      state.loading = Loading.Pending
+      state.error = null
+      state.access_token = null
+      state.user = null
+    })
+    builder.addCase(refreshToken.fulfilled, (state, action) => {
+      state.loading = Loading.Fulfilled
+      state.error = null
+      state.access_token = action.payload.access_token
+      state.user = action.payload.user
+    })
+    builder.addCase(refreshToken.rejected, (state) => {
+      state.loading = Loading.Rejected
+    })
+    /**
+     * Logout
+     */
+    builder.addCase(logout.pending, (state) => {
+      state.loading = Loading.Pending
+    })
+    builder.addCase(logout.fulfilled, (state) => {
+      state.loading = Loading.Fulfilled
+      state.error = null
+      state.access_token = null
+      state.user = null
+    })
+    builder.addCase(logout.rejected, (state) => {
+      state.loading = Loading.Rejected
     })
   },
 })
