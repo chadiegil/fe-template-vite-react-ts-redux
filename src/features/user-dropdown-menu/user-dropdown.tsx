@@ -39,11 +39,12 @@ export function UserDropdownMenu() {
   const navigateToSettingPage = () => {
     navigate(routes.admin.settings)
   }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline">
-          {user !== null ? user.first_name : "Guest"}
+          {user !== null ? user?.first_name : "Guest"}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">

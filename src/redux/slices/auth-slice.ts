@@ -65,6 +65,7 @@ interface InitialState {
   error: string | null
   access_token: string | null
   user: User | null
+  message: string | null
 }
 
 const initialState: InitialState = {
@@ -72,6 +73,7 @@ const initialState: InitialState = {
   error: null,
   access_token: null,
   user: null,
+  message: null,
 }
 
 const authSlice = createSlice({
@@ -134,6 +136,7 @@ const authSlice = createSlice({
       state.error = null
       state.access_token = action.payload.access_token
       state.user = action.payload.user
+      state.user = action.payload.message
     })
     builder.addCase(refreshToken.rejected, (state) => {
       state.loading = Loading.Rejected

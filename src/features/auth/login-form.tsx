@@ -64,7 +64,7 @@ export const LoginForm = () => {
   }
 
   return (
-    <div className="flex flex-col gap-4 p-6 border border-gray-300 shadow-lg rounded-md w-[35%] mt-10">
+    <div className="flex flex-col gap-4 p-6 border border-gray-300 shadow-lg rounded-md min-w-[25%] mt-10">
       <div className="flex justify-center items-center text-lg font-semibold mb-10">
         Login
       </div>
@@ -83,7 +83,7 @@ export const LoginForm = () => {
         onChange={handleInputChange}
         error={validationErrors.password}
       />
-      <p>
+      <p className="md:text-sm">
         Dont have an account yet? Click{" "}
         <span className="text-blue-500">
           <Link to="/auth/register">here</Link>
