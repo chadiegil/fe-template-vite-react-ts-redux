@@ -19,8 +19,8 @@ export const EntryPoint = () => {
 
   useEffect(() => {
     const verifyRefreshToken = async () => {
-      await appDispatch(refreshToken())
       setLoading(false)
+      await appDispatch(refreshToken())
     }
     void verifyRefreshToken()
   }, [])
