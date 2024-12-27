@@ -1,4 +1,11 @@
-import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet"
+import {
+  Sheet,
+  SheetTrigger,
+  SheetContent,
+  SheetTitle,
+  SheetHeader,
+  SheetDescription,
+} from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 import { Link } from "react-router-dom"
 import { SVGProps } from "react"
@@ -18,6 +25,18 @@ export default function Nav() {
             </Button>
           </SheetTrigger>
           <SheetContent side="left">
+            <SheetHeader>
+              <SheetTitle className="flex justify-center text-lg font-semibold bg-gray-100 rounded-md p-1 mt-4">
+                Navigation Menu
+              </SheetTitle>
+              <SheetDescription>
+                {/* Make changes to your profile here. Click save when you're done. */}
+              </SheetDescription>
+            </SheetHeader>
+
+            <p id="dialog-description" className="sr-only">
+              This menu contains navigation links for the site.
+            </p>
             <Link to="/" className="mr-6 hidden lg:flex">
               <MountainIcon className="h-6 w-6" />
               <span className="sr-only">Acme Inc</span>
@@ -31,7 +50,6 @@ export default function Nav() {
                   Home
                 </span>
               </Link>
-
               <Link
                 to="/about"
                 className="flex w-full items-center py-2 text-lg font-semibold  hover:bg-gray-100 p-2 rounded-md"

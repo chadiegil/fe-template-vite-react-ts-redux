@@ -5,16 +5,19 @@ import { Loading } from "@/custom-types/loading-types"
 import { useAppDispatch } from "@/hooks/use-app-dispatch"
 import { useAppSelector } from "@/hooks/use-app-selector"
 // import { useToast } from "@/hooks/use-toast"
-import { login } from "@/redux/slices/auth-slice"
+import { login, resetErrorMessage } from "@/redux/slices/auth-slice"
 import { loginSchema } from "@/utils/validation/auth-schema"
 import { LoaderCircle } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { ValidationError } from "yup"
 
 export const LoginForm = () => {
   const appDispatch = useAppDispatch()
   // const { toast } = useToast()
+  useEffect(() => {
+    appDispatch(resetErrorMessage(null))
+  }, [appDispatch])
 
   const { loading, error } = useAppSelector((state) => state.auth)
 
@@ -37,6 +40,7 @@ export const LoginForm = () => {
 
   const handleSubmit = async () => {
     try {
+      setValidationErrors({})
       await loginSchema.validate(formData, { abortEarly: false })
       await appDispatch(login(formData))
       // console.log(result)
@@ -58,7 +62,7 @@ export const LoginForm = () => {
       }
     }
   }
-  console.log("error", error)
+
   return (
     <div className="flex flex-col gap-4 p-6 border border-gray-300 shadow-lg rounded-md w-[35%] mt-10">
       <div className="flex justify-center items-center text-lg font-semibold mb-10">
@@ -87,7 +91,7 @@ export const LoginForm = () => {
       </p>
       {error != null && <p className="text-red-500">{error}</p>}
       <Button onClick={handleSubmit}>
-        {loading === Loading.Rejected ? (
+        {loading === Loading.Rejected || loading === Loading.Fulfilled ? (
           "Login"
         ) : (
           <LoaderCircle className="loader-circle" />

@@ -3,9 +3,9 @@ import { Input } from "@/components/ui/input"
 import { RegisterFormData } from "@/custom-types/form-data-types"
 import { useAppDispatch } from "@/hooks/use-app-dispatch"
 import { useAppSelector } from "@/hooks/use-app-selector"
-import { register } from "@/redux/slices/auth-slice"
+import { register, resetErrorMessage } from "@/redux/slices/auth-slice"
 import { registerSchema } from "@/utils/validation/auth-schema"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ValidationError } from "yup"
 
 import {
@@ -15,12 +15,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import { LoaderCircle } from "lucide-react"
+import { Loading } from "@/custom-types/loading-types"
+import { useToast } from "@/hooks/use-toast"
 
 export const RegisterForm = () => {
   const appDispatch = useAppDispatch()
+  const { toast } = useToast()
+  const navigate = useNavigate()
 
-  const { error } = useAppSelector((state) => state.auth)
+  useEffect(() => {
+    appDispatch(resetErrorMessage(null))
+  }, [appDispatch])
+  const { loading, error } = useAppSelector((state) => state.auth)
 
   const [formData, setFormData] = useState<RegisterFormData>({
     email: "",
@@ -55,8 +63,17 @@ export const RegisterForm = () => {
 
   const handleRegister = async () => {
     try {
+      setValidationErrors({})
       await registerSchema.validate(formData, { abortEarly: false })
-      await appDispatch(register(formData))
+      const result = await appDispatch(register(formData))
+      if (result.type === "auth/register/fulfilled") {
+        navigate("/")
+        toast({
+          variant: "success",
+          title: "User created successfully.",
+          // description: <div className="text-left">{result.payload}</div>,
+        })
+      }
     } catch (error) {
       if (error instanceof ValidationError) {
         const errors: Partial<RegisterFormData> = {}
@@ -132,7 +149,13 @@ export const RegisterForm = () => {
         </span>
       </p>
       {error != null && <p className="text-red-500">{error}</p>}
-      <Button onClick={handleRegister}>Register</Button>
+      <Button onClick={handleRegister}>
+        {loading === Loading.Rejected || loading === Loading.Fulfilled ? (
+          "Register"
+        ) : (
+          <LoaderCircle className="loader-circle" />
+        )}
+      </Button>
     </div>
   )
 }

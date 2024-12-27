@@ -81,6 +81,9 @@ const authSlice = createSlice({
     setAccessToken: (state, action) => {
       state.access_token = action.payload
     },
+    resetErrorMessage: (state, action) => {
+      state.error = action.payload
+    },
   },
   extraReducers(builder) {
     /**
@@ -97,6 +100,23 @@ const authSlice = createSlice({
       state.user = action.payload.user
     })
     builder.addCase(login.rejected, (state, action) => {
+      state.loading = Loading.Rejected
+      state.error = action.payload as string
+    })
+    /**
+     * Register
+     */
+    builder.addCase(register.pending, (state) => {
+      state.loading = Loading.Pending
+      state.error = null
+    })
+    builder.addCase(register.fulfilled, (state, action) => {
+      state.loading = Loading.Fulfilled
+      state.error = null
+      state.access_token = action.payload.access_token
+      state.user = action.payload.user
+    })
+    builder.addCase(register.rejected, (state, action) => {
       state.loading = Loading.Rejected
       state.error = action.payload as string
     })
@@ -136,5 +156,5 @@ const authSlice = createSlice({
   },
 })
 
-export const { setAccessToken } = authSlice.actions
+export const { setAccessToken, resetErrorMessage } = authSlice.actions
 export default authSlice.reducer
