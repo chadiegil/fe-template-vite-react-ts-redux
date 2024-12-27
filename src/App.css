@@ -4,3 +4,22 @@
   padding: 2rem;
   text-align: center;
 }
+
+
+.loader-circle {
+  border: 1px solid rgba(223, 213, 213, 0.2); /* Light gray border */
+  border-top: 0px solid #d6d5d5; /* Darker border for the spinning effect */
+  border-radius: 50%; /* Makes it circular */
+  width: 54px; /* Size of the loader */
+  height: 54px; /* Size of the loader */
+  animation: spin 1s linear infinite; /* Smooth spinning animation */
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg); /* Start at 0 degrees */
+  }
+  to {
+    transform: rotate(360deg); /* Rotate fully around */
+  }
+}

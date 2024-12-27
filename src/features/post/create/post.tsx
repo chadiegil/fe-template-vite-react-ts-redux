@@ -2,7 +2,6 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
-import * as yup from "yup"
 import { useAppDispatch } from "@/hooks/use-app-dispatch"
 import { createPost } from "@/redux/slices/post-slice"
 import { PostFormData } from "@/custom-types/post-type"
@@ -10,6 +9,7 @@ import { postSchema } from "@/utils/validation/post-schema"
 import { ArrowLeft } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { useToast } from "@/hooks/use-toast"
+import { ValidationError } from "yup"
 // import { ToastAction } from "@/components/ui/toast"
 
 export const PostPage = () => {
@@ -42,17 +42,9 @@ export const PostPage = () => {
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-
     try {
       await postSchema.validate(formData, { abortEarly: false })
-
-      console.log(formData)
-
       await appDispatch(createPost(formData))
-      // toast({
-      //   title: "Post created successfully.",
-      //   description: formData.description,
-      // })
       setFormData({ description: "", attachment: null })
       setValidationErrors({})
       navigate("/")
@@ -62,7 +54,7 @@ export const PostPage = () => {
         description: <div className="text-left">{formData.description}</div>,
       })
     } catch (error) {
-      if (error instanceof yup.ValidationError) {
+      if (error instanceof ValidationError) {
         const errors: Partial<Record<keyof typeof formData, string>> = {}
         error.inner.forEach((err) => {
           if (err.path) {
@@ -107,14 +99,14 @@ export const PostPage = () => {
           <div className="space-y-2 text-left">
             <Label
               htmlFor="attachment"
-              className="text-gray-600 dark:text-gray-400"
+              className="text-gray-600 dark:text-gray-400 hover:cursor-pointer"
             >
               Attachment
             </Label>
             <Input
               id="attachment"
               type="file"
-              className="border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800"
+              className="border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 hover:cursor-pointer"
               onChange={handleFileChange}
               error={validationErrors.attachment}
             />
@@ -122,7 +114,7 @@ export const PostPage = () => {
 
           <Button
             type="submit"
-            className="w-full bg-gray-300 dark:bg-gray-700 text-black dark:text-white"
+            className="w-full bg-gray-700 text-white dark:bg-gray-700  dark:text-white hover:text-white"
           >
             Create
           </Button>

@@ -108,7 +108,7 @@ export const RegisterForm = () => {
       />
       {/* select role */}
       <Select onValueChange={handleRoleChange}>
-        <SelectTrigger className="w-[180px]" error={validationErrors.role}>
+        <SelectTrigger className="w-full" error={validationErrors.role}>
           <SelectValue placeholder="Role" />
         </SelectTrigger>
         <SelectContent>

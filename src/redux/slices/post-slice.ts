@@ -1,6 +1,6 @@
 import { ApiError } from "@/custom-types/api-error-type"
 import { Loading } from "@/custom-types/loading-types"
-import { Post, PostFormData } from "@/custom-types/post-type"
+import { Post, PostFilters, PostFormData } from "@/custom-types/post-type"
 import { axiosInstance } from "@/utils/axios-instance"
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { AxiosError } from "axios"
@@ -12,6 +12,20 @@ export const createPost = createAsyncThunk(
       const response = await axiosInstance.post("/private/create", data, {
         headers: { "Content-Type": "multipart/form-data" },
       })
+      return response.data
+    } catch (error) {
+      const axiosError = error as AxiosError
+      const response = axiosError.response?.data as ApiError
+      return thunkApi.rejectWithValue(response.message)
+    }
+  }
+)
+
+export const getPosts = createAsyncThunk(
+  "post/getPost",
+  async (params: PostFilters, thunkApi) => {
+    try {
+      const response = await axiosInstance.post("/post", { params })
       return response.data
     } catch (error) {
       const axiosError = error as AxiosError
@@ -48,11 +62,34 @@ const PostSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers(builder) {
+    /**
+     * Create post
+     */
     builder.addCase(createPost.pending, (state) => {
       state.loading = Loading.Pending
       state.error = null
     })
     builder.addCase(createPost.fulfilled, (state, action) => {
+      state.loading = Loading.Fulfilled
+      state.error = null
+      state.post = action.payload.data
+      state.hasNextPage = action.payload.pageInfo.hasNextPage
+      state.hasPreviousPage = action.payload.pageInfo.hasPreviousPage
+      state.totalItems = action.payload.pageInfo.totalItems
+      state.totalPages = action.payload.pageInfo.totalPages
+    })
+    builder.addCase(createPost.rejected, (state, action) => {
+      state.loading = Loading.Rejected
+      state.error = action.payload as string
+    })
+    /**
+     * Get posts
+     */
+    builder.addCase(getPosts.pending, (state) => {
+      state.loading = Loading.Pending
+      state.error = null
+    })
+    builder.addCase(getPosts.fulfilled, (state, action) => {
       state.loading = Loading.Fulfilled
       state.error = null
       state.post = action.payload.data

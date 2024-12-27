@@ -8,3 +8,8 @@ export interface PostFormData {
   description: string
   attachment: File | null
 }
+
+export interface PostFilters {
+  description: string
+  name: string
+}

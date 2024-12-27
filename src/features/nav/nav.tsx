@@ -3,51 +3,65 @@ import { Button } from "@/components/ui/button"
 import { Link } from "react-router-dom"
 import { SVGProps } from "react"
 import { UserDropdownMenu } from "../user-dropdown-menu/user-dropdown"
+import { useIsMobile } from "@/hooks/use-mobile"
 
 export default function Nav() {
+  const isMobile = useIsMobile(1080)
   return (
     <header className="flex h-20 w-full shrink-0 items-center">
-      <Sheet>
-        <SheetTrigger asChild>
-          <Button variant="outline" size="icon" className="lg:hidden">
-            <MenuIcon className="h-6 w-6" />
-            <span className="sr-only">Toggle navigation menu</span>
-          </Button>
-        </SheetTrigger>
-        <SheetContent side="left">
-          <Link to="/" className="mr-6 hidden lg:flex">
-            <MountainIcon className="h-6 w-6" />
-            <span className="sr-only">Acme Inc</span>
-          </Link>
-          <div className="grid gap-2 py-6">
-            <Link
-              to="/"
-              className="flex w-full items-center py-2 text-lg font-semibold"
-            >
-              Home
+      <div className={isMobile ? "flex w-full justify-between" : ""}>
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button variant="outline" size="icon" className="lg:hidden">
+              <MenuIcon className="h-6 w-6" />
+              <span className="sr-only">Toggle navigation menu</span>
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left">
+            <Link to="/" className="mr-6 hidden lg:flex">
+              <MountainIcon className="h-6 w-6" />
+              <span className="sr-only">Acme Inc</span>
             </Link>
-            <Link
-              to="/about"
-              className="flex w-full items-center py-2 text-lg font-semibold"
-            >
-              About
-            </Link>
-            <Link
-              to="/admin/post/create"
-              className="flex w-full items-center py-2 text-lg font-semibold"
-            >
-              Post
-            </Link>
-            <Link
-              to="#"
-              className="flex w-full items-center py-2 text-lg font-semibold"
-            >
-              Contact
-            </Link>
-            <UserDropdownMenu />
-          </div>
-        </SheetContent>
-      </Sheet>
+            <div className="grid gap-2 py-6">
+              <Link
+                to="/"
+                className="flex w-full items-center py-2 text-lg font-semibold hover:bg-gray-100 p-2 rounded-md"
+              >
+                <span className="transition-transform duration-300 hover:translate-x-2 w-full">
+                  Home
+                </span>
+              </Link>
+
+              <Link
+                to="/about"
+                className="flex w-full items-center py-2 text-lg font-semibold  hover:bg-gray-100 p-2 rounded-md"
+              >
+                <span className="transition-transform duration-300 hover:translate-x-2 w-full">
+                  About
+                </span>
+              </Link>
+              <Link
+                to="/admin/post/create"
+                className="flex w-full items-center py-2 text-lg font-semibold  hover:bg-gray-100 p-2 rounded-md"
+              >
+                <span className="transition-transform duration-300 hover:translate-x-2 w-full">
+                  Post
+                </span>
+              </Link>
+              <Link
+                to="#"
+                className="flex w-full items-center py-2 text-lg font-semibold  hover:bg-gray-100 p-2 rounded-md"
+              >
+                <span className="transition-transform duration-300 hover:translate-x-2 w-full">
+                  Contact
+                </span>
+              </Link>
+            </div>
+          </SheetContent>
+        </Sheet>
+        {isMobile && <UserDropdownMenu />}
+      </div>
+
       <Link to="/" className="mr-6 hidden lg:flex">
         <MountainIcon className="h-6 w-6" />
         <span className="sr-only">Acme Inc</span>

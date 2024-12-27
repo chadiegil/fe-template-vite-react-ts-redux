@@ -52,7 +52,10 @@ export function UserDropdownMenu() {
         {user !== null ? (
           <DropdownMenuGroup>
             <>
-              <DropdownMenuItem onClick={navigateToSettingPage}>
+              <DropdownMenuItem
+                onClick={navigateToSettingPage}
+                className="hover:cursor-pointer"
+              >
                 Settings
                 <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
               </DropdownMenuItem>
@@ -62,13 +65,19 @@ export function UserDropdownMenu() {
         <DropdownMenuSeparator />
         {user == null ? (
           <>
-            <DropdownMenuItem onClick={handleLogin}>
+            <DropdownMenuItem
+              onClick={handleLogin}
+              className="hover:cursor-pointer"
+            >
               Log in
               <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
             </DropdownMenuItem>
           </>
         ) : (
-          <DropdownMenuItem onClick={handleLogout}>
+          <DropdownMenuItem
+            onClick={handleLogout}
+            className="hover:cursor-pointer"
+          >
             Log out
             <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
           </DropdownMenuItem>
