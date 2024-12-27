@@ -7,7 +7,7 @@ export const routes = {
     register: "/auth/register",
   },
   admin: {
-    post: "/admin/post",
+    post: "/admin/post/create",
     settings: "/admin/settings",
   },
 }

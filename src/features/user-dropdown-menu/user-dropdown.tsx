@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useAppDispatch } from "@/hooks/use-app-dispatch"
 import { useAppSelector } from "@/hooks/use-app-selector"
+import { useToast } from "@/hooks/use-toast"
 import { logout } from "@/redux/slices/auth-slice"
 import { routes } from "@/routes/routes"
 import { useNavigate } from "react-router-dom"
@@ -23,10 +24,14 @@ export function UserDropdownMenu() {
   const { user } = useAppSelector((state) => state.auth)
   const appDispatch = useAppDispatch()
   const navigate = useNavigate()
+  const { toast } = useToast()
 
   const handleLogout = async () => {
     await appDispatch(logout())
-    console.log("called")
+    toast({
+      variant: "success",
+      title: "Logout successful.",
+    })
   }
   const handleLogin = () => {
     navigate("/auth/login")
