@@ -39,6 +39,7 @@ export function UserDropdownMenu() {
   const navigateToSettingPage = () => {
     navigate(routes.admin.settings)
   }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
