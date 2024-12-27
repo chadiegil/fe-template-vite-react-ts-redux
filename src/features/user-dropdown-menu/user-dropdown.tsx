@@ -43,7 +43,7 @@ export function UserDropdownMenu() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline">
-          {user !== null ? user.first_name : "Guest"}
+          {user !== null ? user?.first_name : "Guest"}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">

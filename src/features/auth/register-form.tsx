@@ -70,7 +70,7 @@ export const RegisterForm = () => {
         navigate("/")
         toast({
           variant: "success",
-          title: "User created successfully.",
+          title: `${result.payload.message}`,
           // description: <div className="text-left">{result.payload}</div>,
         })
       }
@@ -142,7 +142,7 @@ export const RegisterForm = () => {
         error={validationErrors?.address}
         onKeyDown={handleKeyDown}
       />
-      <p>
+      <p className="text-sm">
         Already have an account? Click{" "}
         <span className="text-blue-500">
           <Link to="/auth/login">here</Link>
