@@ -136,7 +136,6 @@ const authSlice = createSlice({
       state.error = null
       state.access_token = action.payload.access_token
       state.user = action.payload.user
-      state.user = action.payload.message
     })
     builder.addCase(refreshToken.rejected, (state) => {
       state.loading = Loading.Rejected

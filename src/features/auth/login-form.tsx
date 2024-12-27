@@ -91,7 +91,9 @@ export const LoginForm = () => {
       </p>
       {error != null && <p className="text-red-500">{error}</p>}
       <Button onClick={handleSubmit}>
-        {loading === Loading.Rejected || loading === Loading.Fulfilled ? (
+        {loading === Loading.Rejected ||
+        loading === Loading.Fulfilled ||
+        loading === Loading.Idle ? (
           "Login"
         ) : (
           <LoaderCircle className="loader-circle" />

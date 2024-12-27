@@ -1,11 +1,5 @@
 import { axiosPublic } from "@/utils/axios-public"
+// import { axiosInstance } from "@utils/axios-instance"
 
-export const refreshUserToken = async () => {
-  const token = localStorage.getItem("authToken")
-  if (!token) {
-    return null
-  }
-
-  const response = await axiosPublic.get("/auth/refresh")
-  return response.data
-}
+export const refreshUserToken = async () =>
+  await axiosPublic.get("/auth/refresh", { withCredentials: true })
