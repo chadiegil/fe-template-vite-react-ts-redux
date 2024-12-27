@@ -1,18 +1,22 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { LoginFormData } from "@/custom-types/form-data-types"
+import { Loading } from "@/custom-types/loading-types"
 import { useAppDispatch } from "@/hooks/use-app-dispatch"
 import { useAppSelector } from "@/hooks/use-app-selector"
+// import { useToast } from "@/hooks/use-toast"
 import { login } from "@/redux/slices/auth-slice"
 import { loginSchema } from "@/utils/validation/auth-schema"
+import { LoaderCircle } from "lucide-react"
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import { ValidationError } from "yup"
 
 export const LoginForm = () => {
   const appDispatch = useAppDispatch()
+  // const { toast } = useToast()
 
-  const { error } = useAppSelector((state) => state.auth)
+  const { loading, error } = useAppSelector((state) => state.auth)
 
   const [formData, setFormData] = useState<LoginFormData>({
     email: "",
@@ -35,6 +39,15 @@ export const LoginForm = () => {
     try {
       await loginSchema.validate(formData, { abortEarly: false })
       await appDispatch(login(formData))
+      // console.log(result)
+      // if (result.type === "auth/login/rejected") {
+      //   console.log("called", result)
+      //   toast({
+      //     variant: "destructive",
+      //     // title: "Post created successfully.",
+      //     description: <div className="text-left">{result.payload}</div>,
+      //   })
+      // }
     } catch (error) {
       if (error instanceof ValidationError) {
         const errors: Partial<LoginFormData> = {}
@@ -45,9 +58,9 @@ export const LoginForm = () => {
       }
     }
   }
-
+  console.log("error", error)
   return (
-    <div className="flex flex-col gap-4 p-6 border border-gray-300 shadow-lg rounded-md w-[25%] mt-10">
+    <div className="flex flex-col gap-4 p-6 border border-gray-300 shadow-lg rounded-md w-[35%] mt-10">
       <div className="flex justify-center items-center text-lg font-semibold mb-10">
         Login
       </div>
@@ -73,7 +86,13 @@ export const LoginForm = () => {
         </span>
       </p>
       {error != null && <p className="text-red-500">{error}</p>}
-      <Button onClick={handleSubmit}>Login</Button>
+      <Button onClick={handleSubmit}>
+        {loading === Loading.Rejected ? (
+          "Login"
+        ) : (
+          <LoaderCircle className="loader-circle" />
+        )}
+      </Button>
     </div>
   )
 }

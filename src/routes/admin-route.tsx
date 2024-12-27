@@ -4,7 +4,7 @@ import { useAdmin } from "@/hooks/user-admin"
 import { Navigate, Outlet } from "react-router-dom"
 
 const Setting = lazy(async () => await import("@/pages/settings/setting"))
-const Post = lazy(async () => await import("@/pages/post/post"))
+const Post = lazy(async () => await import("@/pages/post/create/post"))
 export const adminRoutes = {
   element: <AdminRoute />,
   children: [
