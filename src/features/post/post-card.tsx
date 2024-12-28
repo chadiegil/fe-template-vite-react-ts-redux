@@ -1,5 +1,3 @@
-import * as React from "react"
-
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -7,52 +5,115 @@ import {
   CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 
-export function PostCard() {
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+
+import { Post } from "@/custom-types/post-type"
+import { useAppDispatch } from "@/hooks/use-app-dispatch"
+import { useToast } from "@/hooks/use-toast"
+import { deletePost, getPosts } from "@/redux/slices/post-slice"
+import { NotebookPen, Trash2 } from "lucide-react"
+import { useNavigate } from "react-router-dom"
+import { useState } from "react"
+
+export function PostCard(data: Post) {
+  const navigate = useNavigate()
+  const appDispatch = useAppDispatch()
+  const { toast } = useToast()
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+
+  const handleDelete = async (id: number | undefined) => {
+    if (id) {
+      const result = await appDispatch(deletePost(id))
+      if (result.type === "post/deletePost/fulfilled") {
+        toast({
+          variant: "success",
+          title: "Post deleted successfully.",
+        })
+
+        await appDispatch(
+          getPosts({
+            description: "",
+            name: "",
+          })
+        )
+      }
+
+      if (result.type === "post/deletePost/rejected") {
+        toast({
+          variant: "destructive",
+          title: result.payload,
+        })
+      }
+    }
+    setIsDialogOpen(false)
+  }
+
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>Create project</CardTitle>
-        <CardDescription>Deploy your new project in one-click.</CardDescription>
+        <CardDescription>
+          <div>ID: {data.id}</div>
+          <div>Description: {data.description}</div>
+        </CardDescription>
       </CardHeader>
       <CardContent>
-        <form>
-          <div className="grid w-full items-center gap-4">
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="name">Name</Label>
-              <Input id="name" placeholder="Name of your project" />
-            </div>
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="framework">Framework</Label>
-              <Select>
-                <SelectTrigger id="framework">
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent position="popper">
-                  <SelectItem value="next">Next.js</SelectItem>
-                  <SelectItem value="sveltekit">SvelteKit</SelectItem>
-                  <SelectItem value="astro">Astro</SelectItem>
-                  <SelectItem value="nuxt">Nuxt.js</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </form>
+        <div>Attachment: {data.attachment}</div>
+        <div className="w-full flex justify-center">
+          <img
+            className="w-[300px] h-[200px]"
+            src={`${import.meta.env.VITE_APP_BASE_URL}/uploads/${
+              data.attachment
+            }`}
+            alt="img-upload"
+          />
+        </div>
       </CardContent>
       <CardFooter className="flex justify-between">
-        <Button variant="outline">Cancel</Button>
-        <Button>Deploy</Button>
+        <Button
+          variant="outline"
+          onClick={() => navigate(`/admin/post/edit/${data.id}`)}
+        >
+          <NotebookPen className="text-blue-500" />
+        </Button>
+
+        {/* Dialog for confirming deletion */}
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogTrigger asChild>
+            <Button variant="outline">
+              <Trash2 className="text-red-500" />
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Confirm Deletion</DialogTitle>
+              <DialogDescription>
+                Are you sure you want to delete this post? This action cannot be
+                undone.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={() => void handleDelete(data.id)}
+              >
+                Delete
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </CardFooter>
     </Card>
   )

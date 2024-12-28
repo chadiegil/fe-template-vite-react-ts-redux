@@ -1,19 +1,23 @@
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useAppDispatch } from "@/hooks/use-app-dispatch"
-import { createPost } from "@/redux/slices/post-slice"
+import { getSinglePost, updatePost } from "@/redux/slices/post-slice"
 import { PostFormData } from "@/custom-types/post-type"
 import { postSchema } from "@/utils/validation/post-schema"
 import { ArrowLeft } from "lucide-react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { useToast } from "@/hooks/use-toast"
 import { ValidationError } from "yup"
+import { useAppSelector } from "@/hooks/use-app-selector"
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 
-export const PostPage = () => {
+export const EditPostPage = () => {
   const navigate = useNavigate()
   const { toast } = useToast()
+  const { id } = useParams()
+  const { singlePost } = useAppSelector((state) => state.post)
+
   const [formData, setFormData] = useState<PostFormData>({
     description: "",
     attachment: null,
@@ -21,8 +25,28 @@ export const PostPage = () => {
   const [validationErrors, setValidationErrors] = useState<
     Partial<Record<keyof typeof formData, string>>
   >({})
-  const [previewImage, setPreviewImage] = useState<string | null>(null) // State for preview image
+  const [previewImage, setPreviewImage] = useState<string | null>(null)
+
   const appDispatch = useAppDispatch()
+
+  useEffect(() => {
+    const fetchSinglePost = async () => {
+      if (id !== undefined) {
+        await appDispatch(getSinglePost(Number(id)))
+      }
+    }
+    fetchSinglePost()
+  }, [])
+
+  useEffect(() => {
+    if (singlePost) {
+      setFormData({
+        id: singlePost.id,
+        description: singlePost.description,
+        attachment: null,
+      })
+    }
+  }, [singlePost])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target
@@ -41,9 +65,9 @@ export const PostPage = () => {
 
     if (file) {
       const objectUrl = URL.createObjectURL(file)
-      setPreviewImage(objectUrl) // Set preview image URL
+      setPreviewImage(objectUrl)
     } else {
-      setPreviewImage(null) // Clear preview image if no file selected
+      setPreviewImage(null)
     }
   }
 
@@ -51,14 +75,13 @@ export const PostPage = () => {
     e.preventDefault()
     try {
       await postSchema.validate(formData, { abortEarly: false })
-      await appDispatch(createPost(formData))
+      await appDispatch(updatePost(formData))
       setFormData({ description: "", attachment: null })
       setValidationErrors({})
-      setPreviewImage(null) // Clear preview image after form submission
       navigate("/")
       toast({
         variant: "success",
-        title: "Post created successfully.",
+        title: "Post updated successfully.",
         description: <div className="text-left">{formData.description}</div>,
       })
     } catch (error) {
@@ -83,9 +106,10 @@ export const PostPage = () => {
           </Button>
         </div>
         <div className="space-y-2 text-left">
-          <h2 className="text-3xl font-bold">Create Post</h2>
+          <h2 className="text-3xl font-bold">Edit Post</h2>
         </div>
         <form onSubmit={handleFormSubmit} className="space-y-4">
+          {/* Description Field */}
           <div className="space-y-2 text-left">
             <Label
               htmlFor="description"
@@ -95,7 +119,7 @@ export const PostPage = () => {
             </Label>
             <Input
               id="description"
-              placeholder="Enter description"
+              placeholder="Enter a description"
               className="border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800"
               value={formData.description}
               onChange={handleInputChange}
@@ -119,23 +143,23 @@ export const PostPage = () => {
               error={validationErrors.attachment}
             />
           </div>
-
-          {/* Preview Image */}
-          {previewImage && (
-            <div className="flex justify-center align-middle">
-              <img
-                className="w-[100px] h-[100px]"
-                src={previewImage}
-                alt="Preview"
-              />
-            </div>
-          )}
-
+          <div className="flex justify-center align-middle">
+            <img
+              className="w-[100px] h-[100px]"
+              src={
+                previewImage ||
+                `${import.meta.env.VITE_APP_BASE_URL}/uploads/${
+                  singlePost?.attachment
+                }`
+              }
+              alt="img-attachment"
+            />
+          </div>
           <Button
             type="submit"
             className="w-full bg-gray-700 text-white dark:bg-gray-700  dark:text-white hover:text-white"
           >
-            Create
+            Update
           </Button>
         </form>
       </div>
