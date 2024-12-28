@@ -15,7 +15,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-
+import { formatDistanceToNow } from "date-fns"
 import { Post } from "@/custom-types/post-type"
 import { useAppDispatch } from "@/hooks/use-app-dispatch"
 import { useToast } from "@/hooks/use-toast"
@@ -24,6 +24,20 @@ import { NotebookPen, Trash2 } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { useState } from "react"
 import { useAppSelector } from "@/hooks/use-app-selector"
+
+interface Props {
+  createdAt: string | Date
+}
+
+const TimeAgo: React.FC<Props> = ({ createdAt }) => {
+  return (
+    <span className="ml-2">
+      ( {formatDistanceToNow(new Date(createdAt), { addSuffix: true })})
+    </span>
+  )
+}
+
+export default TimeAgo
 
 export function PostCard(data: Post) {
   const navigate = useNavigate()
@@ -64,8 +78,19 @@ export function PostCard(data: Post) {
     <Card className="w-full">
       <CardHeader>
         <CardDescription>
-          <div className="text-left">
-            <span className="font-bold">Description</span>: {data.description}
+          <div className="text-left flex justify-between">
+            <div>
+              <span className="font-bold">Description</span>: {data.description}
+              <div className="my-2">
+                <span className="font-bold">Posted</span>:{" "}
+                {new Date(data.created_at).toLocaleDateString(undefined, {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+                <TimeAgo createdAt={data.created_at} />
+              </div>
+            </div>
           </div>
         </CardDescription>
       </CardHeader>

@@ -3,6 +3,7 @@ export interface Post {
   userId: number
   description: string
   attachment: string | null
+  created_at: Date
 }
 
 export interface PostFormData {

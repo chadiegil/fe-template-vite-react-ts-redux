@@ -30,6 +30,7 @@ export default function Home() {
             key={postItem.id}
             id={postItem.id}
             userId={postItem.userId}
+            created_at={postItem.created_at}
             description={postItem.description}
             attachment={postItem.attachment}
           />
