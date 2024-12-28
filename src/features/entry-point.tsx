@@ -19,7 +19,7 @@ export const EntryPoint = () => {
 
   useEffect(() => {
     const verifyRefreshToken = async () => {
-      const isLoggedIn = localStorage.getItem("loggedIn") === "true"
+      const isLoggedIn = localStorage.getItem("loggedIn")
       if (isLoggedIn) {
         await appDispatch(refreshToken())
       }

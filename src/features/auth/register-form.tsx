@@ -150,7 +150,9 @@ export const RegisterForm = () => {
       </p>
       {error != null && <p className="text-red-500">{error}</p>}
       <Button onClick={handleRegister}>
-        {loading === Loading.Rejected || loading === Loading.Fulfilled ? (
+        {loading === Loading.Rejected ||
+        loading === Loading.Fulfilled ||
+        loading === Loading.Idle ? (
           "Register"
         ) : (
           <LoaderCircle className="loader-circle" />
