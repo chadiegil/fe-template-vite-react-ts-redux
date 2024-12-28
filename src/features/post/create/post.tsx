@@ -10,10 +10,12 @@ import { ArrowLeft } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { useToast } from "@/hooks/use-toast"
 import { ValidationError } from "yup"
+import { useTitle } from "@/hooks/use-title"
 
 export const PostPage = () => {
   const navigate = useNavigate()
   const { toast } = useToast()
+  useTitle("Create Post")
   const [formData, setFormData] = useState<PostFormData>({
     description: "",
     attachment: null,

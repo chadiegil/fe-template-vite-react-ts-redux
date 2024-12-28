@@ -11,12 +11,15 @@ import { useAppSelector } from "@/hooks/use-app-selector"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { useTitle } from "@/hooks/use-title"
 
 export const EditPostPage = () => {
   const navigate = useNavigate()
   const { toast } = useToast()
   const { id } = useParams()
   const { singlePost } = useAppSelector((state) => state.post)
+
+  useTitle("Edit Post")
 
   const [formData, setFormData] = useState<PostFormData>({
     description: "",
