@@ -12,10 +12,12 @@ export const login = createAsyncThunk(
   async (data: LoginFormData, thunkApi) => {
     try {
       const response = await axiosInstance.post("/auth/login", data)
+      localStorage.setItem("loggedIn", "true")
       return response.data
     } catch (error) {
       const axiosError = error as AxiosError
       const response = axiosError.response?.data as ApiError
+      localStorage.removeItem("loggedIn")
       return thunkApi.rejectWithValue(response.message)
     }
   }
@@ -26,10 +28,12 @@ export const register = createAsyncThunk(
   async (data: RegisterFormData, thunkApi) => {
     try {
       const response = await axiosInstance.post("/auth/register", data)
+      localStorage.setItem("loggedIn", "true")
       return response.data
     } catch (error) {
       const axiosError = error as AxiosError
       const response = axiosError.response?.data as ApiError
+      localStorage.removeItem("loggedIn")
       return thunkApi.rejectWithValue(response.message)
     }
   }
@@ -52,10 +56,12 @@ export const refreshToken = createAsyncThunk(
 export const logout = createAsyncThunk("auth/logout", async (_, thunkApi) => {
   try {
     const response = await axiosInstance.post("/auth/logout")
+    localStorage.removeItem("loggedIn")
     return response.data
   } catch (error) {
     const axiosError = error as AxiosError
     const response = axiosError.response?.data as ApiError
+    localStorage.removeItem("loggedIn")
     return thunkApi.rejectWithValue(response.message)
   }
 })
