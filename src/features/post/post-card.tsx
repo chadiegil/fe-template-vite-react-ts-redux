@@ -6,7 +6,6 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card"
-
 import {
   Dialog,
   DialogContent,
@@ -24,12 +23,16 @@ import { deletePost, getPosts } from "@/redux/slices/post-slice"
 import { NotebookPen, Trash2 } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { useState } from "react"
+import { useAppSelector } from "@/hooks/use-app-selector"
 
 export function PostCard(data: Post) {
   const navigate = useNavigate()
   const appDispatch = useAppDispatch()
   const { toast } = useToast()
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+  const [isImageDialogOpen, setIsImageDialogOpen] = useState(false)
+  const { user } = useAppSelector((state) => state.auth)
+  const postOwner = user?.id === data.userId
 
   const handleDelete = async (id: number | undefined) => {
     if (id) {
@@ -47,51 +50,73 @@ export function PostCard(data: Post) {
           })
         )
       }
-
       if (result.type === "post/deletePost/rejected") {
         toast({
           variant: "destructive",
-          title: result.payload,
+          title: `${result.payload}`,
         })
       }
     }
-    setIsDialogOpen(false)
+    setIsDeleteDialogOpen(false)
   }
 
   return (
     <Card className="w-full">
       <CardHeader>
         <CardDescription>
-          <div>ID: {data.id}</div>
-          <div>Description: {data.description}</div>
+          <div className="text-left">
+            <span className="font-bold">Description</span>: {data.description}
+          </div>
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div>Attachment: {data.attachment}</div>
-        <div className="w-full flex justify-center">
-          <img
-            className="w-[300px] h-[200px]"
-            src={`${import.meta.env.VITE_APP_BASE_URL}/uploads/${
-              data.attachment
-            }`}
-            alt="img-upload"
-          />
+        {/* Image with Zoom Dialog */}
+        <div className="flex justify-center">
+          <Dialog open={isImageDialogOpen} onOpenChange={setIsImageDialogOpen}>
+            <DialogTrigger asChild>
+              <img
+                className="w-[300px] h-[200px] cursor-pointer"
+                src={`${import.meta.env.VITE_APP_BASE_URL}/uploads/${
+                  data.attachment
+                }`}
+                alt="img-upload"
+              />
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[90%] p-0">
+              <DialogHeader>
+                <DialogTitle className="p-5">{data.attachment}</DialogTitle>
+              </DialogHeader>
+              <div className="flex justify-center items-center p-5">
+                <img
+                  className="max-w-full max-h-[80vh]"
+                  src={`${import.meta.env.VITE_APP_BASE_URL}/uploads/${
+                    data.attachment
+                  }`}
+                  alt="img-preview"
+                />
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
       </CardContent>
       <CardFooter className="flex justify-between">
-        <Button
-          variant="outline"
-          onClick={() => navigate(`/admin/post/edit/${data.id}`)}
-        >
-          <NotebookPen className="text-blue-500" />
-        </Button>
+        {postOwner ? (
+          <Button
+            variant="outline"
+            onClick={() => navigate(`/admin/post/edit/${data.id}`)}
+          >
+            <NotebookPen className="text-blue-500" />
+          </Button>
+        ) : null}
 
         {/* Dialog for confirming deletion */}
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
           <DialogTrigger asChild>
-            <Button variant="outline">
-              <Trash2 className="text-red-500" />
-            </Button>
+            {postOwner ? (
+              <Button variant="outline">
+                <Trash2 className="text-red-500" />
+              </Button>
+            ) : null}
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
@@ -102,7 +127,10 @@ export function PostCard(data: Post) {
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+              <Button
+                variant="outline"
+                onClick={() => setIsDeleteDialogOpen(false)}
+              >
                 Cancel
               </Button>
               <Button

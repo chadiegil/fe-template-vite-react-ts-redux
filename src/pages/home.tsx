@@ -22,7 +22,6 @@ export default function Home() {
     }
     fetchPost()
   }, [])
-
   return (
     <div className="flex flex-col gap-3">
       {Array.isArray(post) &&
@@ -30,6 +29,7 @@ export default function Home() {
           <PostCard
             key={postItem.id}
             id={postItem.id}
+            userId={postItem.userId}
             description={postItem.description}
             attachment={postItem.attachment}
           />
