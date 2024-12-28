@@ -110,6 +110,9 @@ export function PostCard(data: Post) {
             <DialogContent className="sm:max-w-[90%] p-0">
               <DialogHeader>
                 <DialogTitle className="p-5">{data.attachment}</DialogTitle>
+                <DialogDescription className="pl-5">
+                  {data.description}
+                </DialogDescription>
               </DialogHeader>
               <div className="flex justify-center items-center p-5">
                 <img
