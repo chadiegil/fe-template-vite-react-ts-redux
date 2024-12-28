@@ -5,11 +5,16 @@ export interface Post {
 }
 
 export interface PostFormData {
+  id?: number
   description: string
-  attachment: File | null
+  attachment: File | null | string
 }
 
 export interface PostFilters {
   description: string
   name: string
+}
+
+export interface UploadedImage {
+  attachment: string
 }

@@ -8,6 +8,8 @@ export const routes = {
   },
   admin: {
     post: "/admin/post/create",
+    editPost: "admin/post/edit/:id",
+    deletePost: "admin/post/delete/:id",
     settings: "/admin/settings",
   },
 }

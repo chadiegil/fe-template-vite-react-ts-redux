@@ -5,6 +5,7 @@ import { Navigate, Outlet } from "react-router-dom"
 
 const Setting = lazy(async () => await import("@/pages/settings/setting"))
 const Post = lazy(async () => await import("@/pages/post/create/post"))
+const EditPost = lazy(async () => await import("@/pages/post/edit/edit-post"))
 export const adminRoutes = {
   element: <AdminRoute />,
   children: [
@@ -15,6 +16,10 @@ export const adminRoutes = {
     {
       path: routes.admin.post,
       element: <Post />,
+    },
+    {
+      path: routes.admin.editPost,
+      element: <EditPost />,
     },
   ],
 }
