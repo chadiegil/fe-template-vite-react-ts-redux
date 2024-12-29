@@ -13,6 +13,7 @@ export interface PostFormData {
 }
 
 export interface PostFilters {
+  page?: number
   description: string
   name: string
 }

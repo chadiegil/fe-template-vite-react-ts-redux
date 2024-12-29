@@ -35,6 +35,20 @@ export const getPosts = createAsyncThunk(
   }
 )
 
+export const getlazyPosts = createAsyncThunk(
+  "post/getlazyPost",
+  async (params: PostFilters, thunkApi) => {
+    try {
+      const response = await axiosInstance.get("/post", { params })
+      return response.data
+    } catch (error) {
+      const axiosError = error as AxiosError
+      const response = axiosError.response?.data as ApiError
+      return thunkApi.rejectWithValue(response.message)
+    }
+  }
+)
+
 export const getSinglePost = createAsyncThunk(
   "post/getSinglePost",
   async (id: number, thunkApi) => {
@@ -82,7 +96,8 @@ export const deletePost = createAsyncThunk(
 interface InitialState {
   loading: Loading.Idle | Loading.Pending | Loading.Fulfilled | Loading.Rejected
   error: string | null
-  post: Post | null
+  post: Post[] | null
+  lazyPost: Post[] | null
   singlePost: Post | null
   hasPreviousPage: boolean
   hasNextPage: boolean
@@ -95,6 +110,7 @@ const initialState: InitialState = {
   loading: Loading.Idle,
   error: null,
   post: null,
+  lazyPost: null,
   singlePost: null,
   hasPreviousPage: false,
   hasNextPage: false,
@@ -106,7 +122,11 @@ const initialState: InitialState = {
 const PostSlice = createSlice({
   name: "post",
   initialState,
-  reducers: {},
+  reducers: {
+    setPage(state, action) {
+      state.currentPage = action.payload
+    },
+  },
   extraReducers(builder) {
     /**
      * Create post
@@ -141,6 +161,26 @@ const PostSlice = createSlice({
       state.totalPages = action.payload.pageInfo.totalPages
     })
     builder.addCase(getPosts.rejected, (state, action) => {
+      state.loading = Loading.Rejected
+      state.error = action.payload as string
+    })
+    /**
+     * Get lazy Post
+     */
+    builder.addCase(getlazyPosts.pending, (state) => {
+      state.loading = Loading.Pending
+      state.error = null
+    })
+    builder.addCase(getlazyPosts.fulfilled, (state, action) => {
+      state.loading = Loading.Fulfilled
+      state.error = null
+      state.lazyPost = action.payload.data
+      state.hasNextPage = action.payload.pageInfo.hasNextPage
+      state.hasPreviousPage = action.payload.pageInfo.hasPreviousPage
+      state.totalItems = action.payload.pageInfo.totalItems
+      state.totalPages = action.payload.pageInfo.totalPages
+    })
+    builder.addCase(getlazyPosts.rejected, (state, action) => {
       state.loading = Loading.Rejected
       state.error = action.payload as string
     })
