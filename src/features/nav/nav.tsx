@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/sheet"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { SVGProps, useCallback, useEffect, useRef, useState } from "react"
 import { UserDropdownMenu } from "../user-dropdown-menu/user-dropdown"
 import { useIsMobile } from "@/hooks/use-mobile"
@@ -32,6 +32,7 @@ export default function Nav() {
   const [loading, setLoading] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   const [lazyPostHasNextPage, setLazyPostHasNextPage] = useState<boolean>(true)
+  const navigate = useNavigate()
 
   const fetchPosts = useCallback(
     async (currentPage: number, description = "", name = "") => {
@@ -129,8 +130,19 @@ export default function Nav() {
               This menu contains navigation links for the site.
             </p>
             <Link to="/" className="mr-6 hidden lg:flex">
-              <span className="sr-only">Acme Inc</span>
+              <span
+                className="sr-only"
+                onClick={async () => {
+                  appDispatch({ type: "post/setPage", payload: 1 })
+                  const searchParams = new URLSearchParams(location.search)
+                  searchParams.set("page", "1")
+                  navigate({ search: searchParams.toString() })
+                }}
+              >
+                Acme Inc
+              </span>
             </Link>
+
             <div className="grid gap-2 py-6">
               {user !== null && isAdmin ? (
                 <Link
@@ -150,13 +162,28 @@ export default function Nav() {
                   Contact
                 </span>
               </Link>
+              <Button
+                className="flex w-full items-center py-2 text-lg font-semibold bg-gray-50 hover:bg-gray-100 p-2 rounded-md"
+                variant="ghost"
+                onClick={() => setSearchOpen(true)}
+              >
+                Search
+              </Button>
             </div>
           </SheetContent>
         </Sheet>
         {isMobile && <UserDropdownMenu />}
       </div>
       <Link to="/" className="mr-6 hidden lg:flex">
-        <MountainIcon className="h-6 w-6" />
+        <MountainIcon
+          className="h-6 w-6"
+          onClick={async () => {
+            appDispatch({ type: "post/setPage", payload: 1 })
+            const searchParams = new URLSearchParams(location.search)
+            searchParams.set("page", "1")
+            navigate({ search: searchParams.toString() })
+          }}
+        />
         <span className="sr-only">Acme Inc</span>
       </Link>
 
