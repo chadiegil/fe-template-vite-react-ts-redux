@@ -86,7 +86,7 @@ export function PostCard(data: Post) {
           <Dialog open={isImageDialogOpen} onOpenChange={setIsImageDialogOpen}>
             <DialogTrigger asChild>
               <img
-                className="w-[300px] h-[200px] cursor-pointer"
+                className="w-[300px] h-[200px] cursor-pointer hover:scale-105 transition-transform duration-300"
                 src={`${import.meta.env.VITE_APP_BASE_URL}/uploads/${
                   data.attachment
                 }`}

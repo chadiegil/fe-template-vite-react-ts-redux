@@ -23,13 +23,13 @@ export default function Nav() {
   const appDispatch = useAppDispatch()
   const { user } = useAppSelector((state) => state.auth)
   const searchListRef = useRef<HTMLUListElement | null>(null)
-  // const navigate = useNavigate()
 
   const [searchOpen, setSearchOpen] = useState(false)
   const [lazyPostLocal, setLazyPostLocal] = useState<Post[]>([])
   const [currentLazyPage, setCurrentLazyPage] = useState<number>(1)
   const [loading, setLoading] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
+  const [lazyPostHasNextPage, setLazyPostHasNextPage] = useState<boolean>(true)
 
   const fetchPosts = useCallback(
     async (currentPage: number, description = "", name = "") => {
@@ -53,13 +53,16 @@ export default function Nav() {
       })
 
       setCurrentLazyPage(result.payload.pageInfo.currentPage)
+      setLazyPostHasNextPage(result.payload.pageInfo.hasNextPage)
       setLoading(false)
     },
     [appDispatch, loading]
   )
 
   useEffect(() => {
-    fetchPosts(currentLazyPage)
+    if (lazyPostHasNextPage) {
+      fetchPosts(currentLazyPage)
+    }
   }, [currentLazyPage])
 
   const handleScroll = () => {
@@ -84,12 +87,12 @@ export default function Nav() {
 
   const clearSearch = async () => {
     setSearchQuery("")
-    await fetchPosts(1) // Fetch all posts when clearing the search
+    await fetchPosts(1)
   }
 
   const filteredPosts = lazyPostLocal.filter((post) =>
     post.description.toLowerCase().includes(searchQuery.toLowerCase())
-  ) // Filter posts based on search query
+  )
 
   const handleClear = async () => {
     await appDispatch(
@@ -101,6 +104,7 @@ export default function Nav() {
     )
     setSearchOpen(false)
   }
+
   return (
     <header className="flex h-12 w-full shrink-0 items-center">
       <div className={isMobile ? "flex w-full justify-between" : ""}>
@@ -126,22 +130,6 @@ export default function Nav() {
               <span className="sr-only">Acme Inc</span>
             </Link>
             <div className="grid gap-2 py-6">
-              {/* <Link
-                to="/"
-                className="flex w-full items-center py-2 text-lg font-semibold hover:bg-gray-100 p-2 rounded-md"
-              >
-                <span className="transition-transform duration-300 hover:translate-x-2 w-full">
-                  Home
-                </span>
-              </Link> */}
-              {/* <Link
-                to="/about"
-                className="flex w-full items-center py-2 text-lg font-semibold hover:bg-gray-100 p-2 rounded-md"
-              >
-                <span className="transition-transform duration-300 hover:translate-x-2 w-full">
-                  About
-                </span>
-              </Link> */}
               {user !== null ? (
                 <Link
                   to="/admin/post/create"
@@ -174,19 +162,6 @@ export default function Nav() {
         <Button variant="ghost" onClick={() => setSearchOpen(true)}>
           Search
         </Button>
-
-        {/* <Link
-          to="/"
-          className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-900"
-        >
-          Home
-        </Link> */}
-        {/* <Link
-          to="/about"
-          className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-900"
-        >
-          About
-        </Link> */}
         {user !== null ? (
           <Link
             to="/admin/post/create"
