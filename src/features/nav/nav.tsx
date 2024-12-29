@@ -16,10 +16,12 @@ import { useAppDispatch } from "@/hooks/use-app-dispatch"
 import { getlazyPosts, getPosts } from "@/redux/slices/post-slice"
 import { Post } from "@/custom-types/post-type"
 import { X } from "lucide-react"
+import { useAppSelector } from "@/hooks/use-app-selector"
 
 export default function Nav() {
   const isMobile = useIsMobile(1080)
   const appDispatch = useAppDispatch()
+  const { user } = useAppSelector((state) => state.auth)
   const searchListRef = useRef<HTMLUListElement | null>(null)
 
   const [searchOpen, setSearchOpen] = useState(false)
@@ -139,14 +141,16 @@ export default function Nav() {
                   About
                 </span>
               </Link>
-              <Link
-                to="/admin/post/create"
-                className="flex w-full items-center py-2 text-lg font-semibold hover:bg-gray-100 p-2 rounded-md"
-              >
-                <span className="transition-transform duration-300 hover:translate-x-2 w-full">
-                  Post
-                </span>
-              </Link>
+              {user !== null ? (
+                <Link
+                  to="/admin/post/create"
+                  className="flex w-full items-center py-2 text-lg font-semibold hover:bg-gray-100 p-2 rounded-md"
+                >
+                  <span className="transition-transform duration-300 hover:translate-x-2 w-full">
+                    Post
+                  </span>
+                </Link>
+              ) : null}
               <Link
                 to="#"
                 className="flex w-full items-center py-2 text-lg font-semibold hover:bg-gray-100 p-2 rounded-md"
@@ -182,12 +186,14 @@ export default function Nav() {
         >
           About
         </Link>
-        <Link
-          to="/admin/post/create"
-          className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-900"
-        >
-          Post
-        </Link>
+        {user !== null ? (
+          <Link
+            to="/admin/post/create"
+            className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-gray-900"
+          >
+            Post
+          </Link>
+        ) : null}
         <UserDropdownMenu />
       </nav>
 
