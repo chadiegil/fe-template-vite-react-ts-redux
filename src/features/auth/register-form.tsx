@@ -67,7 +67,7 @@ export const RegisterForm = () => {
       await registerSchema.validate(formData, { abortEarly: false })
       const result = await appDispatch(register(formData))
       if (result.type === "auth/register/fulfilled") {
-        navigate("/")
+        navigate("/auth/login")
         toast({
           variant: "success",
           title: `${result.payload.message}`,
